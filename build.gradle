@@ -1,0 +1,81 @@
+buildscript {
+    ext {
+        springBootVersion ='2.0.0.M6'
+        lombokVersion = '1.16.18'
+    }
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.projectlombok:lombok:${lombokVersion}")
+        classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.1")
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+group = 'com.levonke'
+version = '0.0.1'
+sourceCompatibility = 1.8
+
+jar {
+    baseName = 'levonke'
+    version = '0.0.1'
+}
+
+compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.compilerArgs += '-parameters'
+}
+
+ext.springVersion   = '5.0.1.RELEASE'
+ext.junitVersion    = '5.0.0'
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework.boot:spring-boot-starter-data-rest")
+
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+
+    runtime("org.postgresql:postgresql")
+
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.0.0.M6'
+    testCompile group: 'org.springframework', name: 'spring-test', version: '5.0.1.RELEASE'
+
+//    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.12.0'
+
+    // To avoid compiler warnings about @API annotations in JUnit code.
+    compile("org.apiguardian:apiguardian-api:1.0.0")
+
+    testCompile group: 'org.junit.platform', name: 'junit-platform-runner', version: '1.0.1'
+    testCompile("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+}
+
+junitPlatform {
+    filters {
+        engines {
+            include 'junit-jupiter'
+        }
+        tags {
+            exclude 'slow'
+        }
+        includeClassNamePattern '.*Test'
+    }
+    reportsDir file('build/test-results/junit-platform')
+}
