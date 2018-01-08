@@ -2,7 +2,6 @@ package com.levonke.OAuth.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
-
 import javax.persistence.*;
 import java.util.Date;
 
